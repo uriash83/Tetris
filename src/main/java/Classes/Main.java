@@ -30,6 +30,7 @@ public class Main extends Application {
         primaryStage.setTitle("M&M Tetris");
         primaryStage.show();
 
+
         pane.getChildren().add(rect1);
 
     }
