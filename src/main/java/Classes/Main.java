@@ -38,6 +38,7 @@ public class Main extends Application {
 
     public static List<Coordinate> coordinateActualTetrimino = new ArrayList<>();
     public static Map<Integer,Rectangle> coordinateStatTetrimino = new TreeMap<>();
+    public static Map<Integer,Rectangle> coordinateStatTetriminoCopy = new TreeMap<>();
     public static Map<Integer,Coordinate> mapOfRotateTetrimino = new TreeMap<>();
 
 
@@ -84,50 +85,45 @@ public class Main extends Application {
                     System.out.println("IFFFFFFFFFFFFFFFF>190");
                 }
                 else{
-                    theHighestPositionY=0;
+
                     /*
                     reset shifting tetromino because new piece should bi in the same position
                      */
                     MoveTetrimino.shiftLeftRight = 0;
                     //temporary
                     for (int i = 0; i < coordinateActualTetrimino.size(); i++) {
-                        System.out.println("AR Y" + coordinateActualTetrimino.get(i).getY() + " X " + coordinateActualTetrimino.get(i).getX());
-                        //System.out.println("AR"+arrayAllTetrimino[coordinateActualTetrimino.get(i).getY()][coordinateActualTetrimino.get(i).getX()]);
-
-
+                        System.out.println("RECTANGLE LAYOUT  X " + coordinateActualTetrimino.get(i).getRectangle().getLayoutX() +"RECTANGLE LAYOUT  Y " + coordinateActualTetrimino.get(i).getRectangle().getLayoutY()  );
+                        //System.out.println("SIZE " + coordinateActualTetrimino.size() + " AR Y" + coordinateActualTetrimino.get(i).getY() + " X " + coordinateActualTetrimino.get(i).getX());
+                        System.out.println("RECTAGLE GETX " + coordinateActualTetrimino.get(i).getRectangle().getX());
                     }
                     /*
                     save actual tetrmino to state matrix before to manage it later (remove )
                      */
+
                     for (int i = 0; i < coordinateActualTetrimino.size(); i++) {
                         coordinateStatTetrimino.put(coordinateActualTetrimino.get(i).getY()*10+coordinateActualTetrimino.get(i).getX(),
                                 coordinateActualTetrimino.get(i).getRectangle());
+                        System.out.println("STATE " + coordinateStatTetrimino.size() + " i = " + i);
                     }
 
                     numberActualTetromino+=1;
                     if(numberActualTetromino>7)
                         numberActualTetromino=1;
                     System.out.println(numberActualTetromino);
+
                     addNewShape(numberActualTetromino);
                     show(coordinateActualTetrimino);
-                    chcecking.ifNextGravityPlaceIsFree(coordinateStatTetrimino,coordinateActualTetrimino);
-                    //Platform.runLater(new Runnable() {
-                    //    @Override
-                    //    public void run() {
-                    //         pane.getChildren().remove(coordinateStatTetrimino.remove(169));
-                    //         pane.getChildren().remove(coordinateStatTetrimino.remove(179));
-                    //         pane.getChildren().remove(coordinateStatTetrimino.remove(189));
-                    //         pane.getChildren().remove(coordinateStatTetrimino.remove(199));
-                    //        }
-                    //    });
+
+                    checkAndRemoveLine(theLowestPositionY,coordinateStatTetrimino, coordinateStatTetriminoCopy);
                     Platform.runLater(new Runnable() {
                         @Override
                         public void run() {
-                            addNewTetrminoToPane();
+                           addNewTetrminoToPane();
                         }
                     });
-
+                    theHighestPositionY=0;
                 }
+
                 System.out.println("SIZE " + coordinateActualTetrimino.size());
                 show(coordinateActualTetrimino);
 
@@ -167,15 +163,110 @@ public class Main extends Application {
         }
     }
 
-    public void reemov()
+    public void addNewTetrminoStaticToPane()
     {
 
-        for (int i = 0; i < coordinateActualTetrimino.size(); i++) {
-            pane.getChildren().remove(coordinateActualTetrimino.get(i).getRectangle());
+        for (int i = 0; i < coordinateStatTetrimino.size(); i++) {
+            pane.getChildren().add(coordinateActualTetrimino.get(i).getRectangle());
+        }
+    }
+
+    public void checkAndRemoveLine(int theLowestYPosition, Map<Integer, Rectangle> map , Map<Integer, Rectangle> mapCopy)
+    {
+        /*
+        check and remove line
+         */
+        int counterLine= 0;
+        int layerFromToLower = 0;
+        for (int dz = theLowestYPosition; dz < 20; dz++) {
+            int counter = 0;
+            System.out.println("CHECK = " + dz);
+            for (int i = 0; i < 10; i++) {
+                if (map.get(dz * 10 + i) != null)
+                    counter += 1;
+                if (counter == 10){
+                    counter=0;
+                    System.out.println("FIZNAL DZEZ "  + dz);
+                    counterLine+=1;
+                    int finalDzes = dz;
+                    layerFromToLower=dz;
+                    Platform.runLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        for (int j = 0; j < 10; j++) {
+                            pane.getChildren().remove(map.remove((finalDzes * 10) + j));
+                            System.out.println("REMOVED");
+                        }
+                    }
+                    });
+                    mapCopy.clear();
+                    try {
+                        Thread.sleep(150);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    //for (int j = 0; j < 10; j++) {
+                    //    System.out.println(" REC BEFORE 0 " + map.get(dz*10+j) + "REC BEFORE  -1 " +  map.get((dz-1)*10+j));
+                    //}
+                    for (int j = 0; j < 10; j++) {
+                        map.put(dz*10+j,map.get((dz-1)*10+j));
+                        mapCopy.put(dz*10+j,map.get((dz-1)*10+j));
+                    }
+                    for (int j = 0; j < 10; j++) {
+                        Platform.runLater(new Runnable() {
+                            @Override
+                            public void run() {
+                                for (int j = 0; j < 10; j++) {
+                                    pane.getChildren().remove(map.get(((finalDzes-1) * 10) + j));
+                                    map.remove((finalDzes-1)*10+j);
+                                }
+                            }
+                        });
+
+                    }
+
+                    //for (int j = 0; j < 10; j++) {
+                     //   System.out.println(" REC AFTER  0 " + map.get(dz*10+j) + "REC  AFTER -1 " +  map.get((dz-1)*10+j));
+                    //}
+                    Platform.runLater(new Runnable() {
+                        @Override
+                        public void run() {
+                            for (int j = 0; j < 10; j++) {
+                                //map.put(finalDzes*10+j,map.get((finalDzes-1)*10+j));
+                                //map.get(dz*10+j).setLayoutY(300);
+                                if(map.get(finalDzes*10+j)!=null) {
+                                    double D = mapCopy.get(finalDzes*10+j).getLayoutY();
+                                    System.out.println("LEYAOYT " );
+                                    map.get(finalDzes*10+j).setLayoutY(D+25);
+                                    pane.getChildren().add(map.get(finalDzes * 10 + j));
+                                }
+                                //System.out.printf("LAYOUTR %s%n", map.get(dz * 10 + j).getLayoutY());
+
+                            }
+                        }
+                    });
 
 
+
+
+
+
+                       // System.out.println("SIZE MAPCOPY" + mapCopy.size() + "SIZE MAP" + map.size());
+
+
+                }
+                else {
+                    //System.out.println("COUNTER =" + counter);
+                }
+
+            }
 
         }
+
+
+
+
+
     }
 
     public void initalizeBorderMap(Map<Integer,Rectangle> map)
@@ -190,6 +281,10 @@ public class Main extends Application {
         map.put(207,new Rectangle(25,25,Color.RED));
         map.put(208,new Rectangle(25,25,Color.RED));
         map.put(209,new Rectangle(25,25,Color.RED));
+
+
+
+
     }
 
 
