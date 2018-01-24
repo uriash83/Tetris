@@ -14,6 +14,7 @@ public class PaneControler {
     Main main = new Main();
     @FXML
     public Pane pane;
+   
 
     public PaneControler() {
     }
@@ -24,7 +25,7 @@ public class PaneControler {
        // pane.setOnKeyPressed(e-> {
         //    System.out.println("Kprassed");
         //});
-
+        //labelScore.setText("MYTEXT");
 
     }
 
@@ -42,6 +43,7 @@ public class PaneControler {
                     break;
             case S:
                 System.out.println("push s");
+                Main.delayGrav = mv.moveFastTetrminoDown();
                 break;
             case W:
                 System.out.println("push w");

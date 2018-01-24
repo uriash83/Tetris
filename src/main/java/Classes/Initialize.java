@@ -7,41 +7,41 @@ import java.util.*;
 public class Initialize {
     public void initalizeShapeOfTeriminoRotate(Map <Integer,Coordinate> map){
      /*
+        x x
         x
         x
-      x x
       */
-        map.put(100, new Coordinate(4, 0, new Rectangle(25, 25, Color.GREEN)));
-        map.put(101, new Coordinate(4, 1, new Rectangle(25, 25, Color.GREEN)));
-        map.put(102, new Coordinate(4, 2, new Rectangle(25, 25, Color.GREEN)));
-        map.put(103, new Coordinate(3, 2, new Rectangle(25, 25, Color.GREEN)));
+        map.put(100, new Coordinate(3, 0, new Rectangle(25, 25)));
+        map.put(101, new Coordinate(3, 1, new Rectangle(25, 25)));
+        map.put(102, new Coordinate(3, 2, new Rectangle(25, 25)));
+        map.put(103, new Coordinate(4, 0, new Rectangle(25, 25)));
      /*
       x x x
-      x
+          x
       */
-        map.put(110, new Coordinate(4, 0, new Rectangle(25, 25, Color.BLACK)));
-        map.put(111, new Coordinate(5, 0, new Rectangle(25, 25, Color.BLACK)));
-        map.put(112, new Coordinate(6, 0, new Rectangle(25, 25, Color.BLACK)));
-        map.put(113, new Coordinate(4, 1, new Rectangle(25, 25, Color.BLACK)));
+        map.put(110, new Coordinate(4, 0, new Rectangle(25, 25)));
+        map.put(111, new Coordinate(5, 0, new Rectangle(25, 25)));
+        map.put(112, new Coordinate(6, 0, new Rectangle(25, 25)));
+        map.put(113, new Coordinate(6, 1, new Rectangle(25, 25)));
 
      /*
+       x
+       x
      x x
-       x
-       x
       */
-        map.put(120, new Coordinate(4, 0, new Rectangle(25, 25, Color.CADETBLUE)));
-        map.put(121, new Coordinate(5, 0, new Rectangle(25, 25, Color.BLACK)));
-        map.put(122, new Coordinate(5, 1, new Rectangle(25, 25, Color.BLACK)));
-        map.put(123, new Coordinate(5, 2, new Rectangle(25, 25, Color.BLACK)));
+        map.put(120, new Coordinate(4, 2, new Rectangle(25, 25)));
+        map.put(121, new Coordinate(5, 0, new Rectangle(25, 25)));
+        map.put(122, new Coordinate(5, 1, new Rectangle(25, 25)));
+        map.put(123, new Coordinate(5, 2, new Rectangle(25, 25)));
      /*
-           x
+       x
        x x x
       */
 
-        map.put(130, new Coordinate(4, 1, new Rectangle(25, 25, Color.BLACK)));
-        map.put(131, new Coordinate(5, 1, new Rectangle(25, 25, Color.BLACK)));
-        map.put(132, new Coordinate(6, 1, new Rectangle(25, 25, Color.BLACK)));
-        map.put(133, new Coordinate(6, 0, new Rectangle(25, 25, Color.BLACK)));
+        map.put(130, new Coordinate(4, 1, new Rectangle(25, 25)));
+        map.put(131, new Coordinate(5, 1, new Rectangle(25, 25)));
+        map.put(132, new Coordinate(6, 1, new Rectangle(25, 25)));
+        map.put(133, new Coordinate(4, 0, new Rectangle(25, 25)));
     //*****************************************************************************************************
     //*****************************************************************************************************
     //*****************************************************************************************************
@@ -50,18 +50,18 @@ public class Initialize {
          x
          x x
       */
-        map.put(200, new Coordinate(4, 0, new Rectangle(25, 25, Color.BLACK)));
-        map.put(201, new Coordinate(4, 1, new Rectangle(25, 25, Color.BLACK)));
-        map.put(202, new Coordinate(4, 2, new Rectangle(25, 25, Color.BLACK)));
-        map.put(203, new Coordinate(5, 2, new Rectangle(25, 25, Color.BLACK)));
+        map.put(200, new Coordinate(4, 0, new Rectangle(25, 25)));
+        map.put(201, new Coordinate(4, 1, new Rectangle(25, 25)));
+        map.put(202, new Coordinate(4, 2, new Rectangle(25, 25)));
+        map.put(203, new Coordinate(5, 2, new Rectangle(25, 25)));
        /*
          x x x
          x
       */
-        map.put(210, new Coordinate(4, 0, new Rectangle(25, 25, Color.BLACK)));
-        map.put(211, new Coordinate(5, 0, new Rectangle(25, 25, Color.BLACK)));
-        map.put(212, new Coordinate(6, 0, new Rectangle(25, 25, Color.BLACK)));
-        map.put(213, new Coordinate(4, 1, new Rectangle(25, 25, Color.BLACK)));
+        map.put(210, new Coordinate(4, 0, new Rectangle(25, 25)));
+        map.put(211, new Coordinate(5, 0, new Rectangle(25, 25)));
+        map.put(212, new Coordinate(6, 0, new Rectangle(25, 25)));
+        map.put(213, new Coordinate(4, 1, new Rectangle(25, 25)));
          /*
          x x
            x

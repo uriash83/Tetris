@@ -5,6 +5,7 @@ import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.control.Label;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
@@ -19,6 +20,7 @@ public class Main extends Application {
     public static final int MULTIPLY = 25;
     LocalTime time;
     Clock clock = new Clock();
+    Random random = new Random();
     Rectangle r1;
     Rectangle r2;
     Pane pane;
@@ -33,6 +35,9 @@ public class Main extends Application {
     Chcecking chcecking = new Chcecking();
     Initialize initialize = new Initialize();
     static int numberActualTetromino  = 1;
+    public static long delayGrav = 400;
+    public double r,g,b=  0;
+    public static Color color;
 
 
 
@@ -57,9 +62,9 @@ public class Main extends Application {
             while (true) {
                 time = LocalTime.now();
                 clock.setClock(time.toString());
-
+                long delayGravity = delayGrav;
                 try {
-                    Thread.sleep(500);
+                    Thread.sleep(delayGravity);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -105,16 +110,20 @@ public class Main extends Application {
                                 coordinateActualTetrimino.get(i).getRectangle());
                         System.out.println("STATE " + coordinateStatTetrimino.size() + " i = " + i);
                     }
+                    numberActualTetromino = random.nextInt(7) + 1;
+                    //numberActualTetromino+=1;
+                    //if(numberActualTetromino>7)
+                    //    numberActualTetromino=1;
+                    System.out.println("RANDON NUMBER " + numberActualTetromino);
 
-                    numberActualTetromino+=1;
-                    if(numberActualTetromino>7)
-                        numberActualTetromino=1;
-                    System.out.println(numberActualTetromino);
-
+                    r = random.nextFloat();
+                    g = random.nextFloat();
+                    b = random.nextFloat();
+                    color = new Color(r,g,b,1);
                     addNewShape(numberActualTetromino);
                     show(coordinateActualTetrimino);
 
-                    checkAndRemoveLine(theLowestPositionY,coordinateStatTetrimino, coordinateStatTetriminoCopy);
+                    checkAndRemoveLine(theLowestPositionY,theHighestPositionY,coordinateStatTetrimino, coordinateStatTetriminoCopy);
                     Platform.runLater(new Runnable() {
                         @Override
                         public void run() {
@@ -122,10 +131,12 @@ public class Main extends Application {
                         }
                     });
                     theHighestPositionY=0;
+                    delayGrav = 400;
                 }
 
                 System.out.println("SIZE " + coordinateActualTetrimino.size());
                 show(coordinateActualTetrimino);
+
 
             }
         }).start();
@@ -142,6 +153,7 @@ public class Main extends Application {
         for (int i = 0; i < coordinateActualTetrimino.size(); i++) {
             coordinateActualTetrimino.get(i).setX(mapOfRotateTetrimino.get(numberofTetromino*100+i).getX());
             coordinateActualTetrimino.get(i).setY(mapOfRotateTetrimino.get(numberofTetromino*100+i).getY());
+            coordinateActualTetrimino.get(i).getRectangle().setFill(Main.color);
         }
 
 
@@ -171,82 +183,106 @@ public class Main extends Application {
         }
     }
 
-    public void checkAndRemoveLine(int theLowestYPosition, Map<Integer, Rectangle> map , Map<Integer, Rectangle> mapCopy)
+    public void checkAndRemoveLine(int theLowestYPosition, int theHighestPositionY,Map<Integer, Rectangle> map , Map<Integer, Rectangle> mapCopy)
     {
         /*
         check and remove line
          */
         int counterLine= 0;
         int layerFromToLower = 0;
+        /*
+        beyond loop checking coordinateStateMap from theLowestPositon untill not found line contain full tetrimino
+         */
         for (int dz = theLowestYPosition; dz < 20; dz++) {
-            int counter = 0;
-            System.out.println("CHECK = " + dz);
+            int counterFullLine = 0;
+            System.out.println("The Lowest Y  = " + dz + "TheHisgrest Y = " + theHighestPositionY);
             for (int i = 0; i < 10; i++) {
                 if (map.get(dz * 10 + i) != null)
-                    counter += 1;
-                if (counter == 10){
-                    counter=0;
-                    System.out.println("FIZNAL DZEZ "  + dz);
+                    counterFullLine += 1;
+                if (counterFullLine == 10){ // this condition is executing if line is full of tetromino
+                    counterFullLine=0;
                     counterLine+=1;
-                    int finalDzes = dz;
-                    layerFromToLower=dz;
-                    Platform.runLater(new Runnable() {
-                    @Override
-                    public void run() {
-                        for (int j = 0; j < 10; j++) {
-                            pane.getChildren().remove(map.remove((finalDzes * 10) + j));
-                            System.out.println("REMOVED");
+                    for (int nextLine = dz; nextLine >1 ; nextLine--) {
+
+                        int nextLine1 = nextLine;
+                        Platform.runLater(new Runnable() { // removing all tetromino in full line
+                            @Override
+                            public void run() {
+                                for (int j = 0; j < 10; j++) {
+                                    pane.getChildren().remove(map.remove((nextLine1 * 10) + j));
+                                    System.out.println("REMOVED");
+                                }
+                            }
+                        });
+                        mapCopy.clear();// copy map for saving coordintate
+
+                        try {
+                            Thread.sleep(50);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
                         }
-                    }
-                    });
-                    mapCopy.clear();
-                    try {
-                        Thread.sleep(150);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                    //for (int j = 0; j < 10; j++) {
-                    //    System.out.println(" REC BEFORE 0 " + map.get(dz*10+j) + "REC BEFORE  -1 " +  map.get((dz-1)*10+j));
-                    //}
-                    for (int j = 0; j < 10; j++) {
-                        map.put(dz*10+j,map.get((dz-1)*10+j));
-                        mapCopy.put(dz*10+j,map.get((dz-1)*10+j));
-                    }
-                    for (int j = 0; j < 10; j++) {
+
+                        //for (int j = 0; j < 10; j++) {
+                        //    System.out.println(" REC BEFORE 0 " + map.get(dz*10+j) + "REC BEFORE  -1 " +  map.get((dz-1)*10+j));
+                        //}
+                        /*
+                        1 stage ;
+                        copy line current-1 to current and synchrosnus copy to mapCopy
+                         */
+                        for (int j = 0; j < 10; j++) {
+                            map.put(nextLine * 10 + j, map.get((nextLine - 1) * 10 + j));
+                            mapCopy.put(nextLine * 10 + j, map.get((nextLine - 1) * 10 + j));
+                        }
+                        /*
+                        stage 2; removing all tetromino from line current -1;
+                         */
+                        int nextLine2 = nextLine;
+                        for (int j = 0; j < 10; j++) {
+                            Platform.runLater(new Runnable() {
+                                @Override
+                                public void run() {
+                                    for (int j = 0; j < 10; j++) {
+                                        pane.getChildren().remove(map.get(((nextLine2 - 1) * 10) + j));
+                                        map.remove((nextLine2 - 1) * 10 + j);
+                                    }
+                                }
+                            });
+
+                        }
+
+                        //for (int j = 0; j < 10; j++) {
+                        //   System.out.println(" REC AFTER  0 " + map.get(dz*10+j) + "REC  AFTER -1 " +  map.get((dz-1)*10+j));
+                        //}
+                        /*
+                        stage 3; shifting tetrmino form lie current-1 to line current
+                         */
+                        int nextLine3=  nextLine;
                         Platform.runLater(new Runnable() {
                             @Override
                             public void run() {
                                 for (int j = 0; j < 10; j++) {
-                                    pane.getChildren().remove(map.get(((finalDzes-1) * 10) + j));
-                                    map.remove((finalDzes-1)*10+j);
+                                    //map.put(finalDzes*10+j,map.get((finalDzes-1)*10+j));
+                                    //map.get(dz*10+j).setLayoutY(300);
+                                    if (map.get(nextLine3 * 10 + j) != null) {
+                                        double D = mapCopy.get(nextLine3 * 10 + j).getLayoutY();
+                                        System.out.println("LEYAOYT ");
+                                        map.get(nextLine3 * 10 + j).setLayoutY(D + 25);
+                                        pane.getChildren().add(map.get(nextLine3 * 10 + j));
+                                    }
+                                    //System.out.printf("LAYOUTR %s%n", map.get(dz * 10 + j).getLayoutY());
+
                                 }
                             }
                         });
+                        System.out.println("FIZNAL DZEZ "  + nextLine);
+
+                        try {
+                            Thread.sleep(50);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
 
                     }
-
-                    //for (int j = 0; j < 10; j++) {
-                     //   System.out.println(" REC AFTER  0 " + map.get(dz*10+j) + "REC  AFTER -1 " +  map.get((dz-1)*10+j));
-                    //}
-                    Platform.runLater(new Runnable() {
-                        @Override
-                        public void run() {
-                            for (int j = 0; j < 10; j++) {
-                                //map.put(finalDzes*10+j,map.get((finalDzes-1)*10+j));
-                                //map.get(dz*10+j).setLayoutY(300);
-                                if(map.get(finalDzes*10+j)!=null) {
-                                    double D = mapCopy.get(finalDzes*10+j).getLayoutY();
-                                    System.out.println("LEYAOYT " );
-                                    map.get(finalDzes*10+j).setLayoutY(D+25);
-                                    pane.getChildren().add(map.get(finalDzes * 10 + j));
-                                }
-                                //System.out.printf("LAYOUTR %s%n", map.get(dz * 10 + j).getLayoutY());
-
-                            }
-                        }
-                    });
-
-
 
 
 
@@ -300,17 +336,17 @@ public class Main extends Application {
         primaryStage.setResizable(false);
         primaryStage.setTitle("M&M Tetris");
         primaryStage.show();
-
-
-
-        //pane.getChildren().add(rect2);
-
         runClock();
 
         initialize.initalizeShapeOfTeriminoRotate(mapOfRotateTetrimino);
+        r = random.nextFloat();
+        g = random.nextFloat();
+        b = random.nextFloat();
+        System.out.println("COLOR "+ r + " " + g + " " + b);
+        Main.color = new Color(r,g,b,1);
         addNewShape(numberActualTetromino);
         show(coordinateActualTetrimino);
-        pane.getChildren().add(clock);
+        pane.getChildren().addAll(clock);
         addNewTetrminoToPane();
         initalizeBorderMap(coordinateStatTetrimino);
 

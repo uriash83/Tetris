@@ -107,4 +107,12 @@ public class MoveTetrimino {
 
 
     }
+
+    public long moveFastTetrminoDown()
+    {
+        long delayTime;
+        delayTime = 40;
+        System.out.println("DELAY = " + delayTime);
+        return delayTime;
+    }
 }
